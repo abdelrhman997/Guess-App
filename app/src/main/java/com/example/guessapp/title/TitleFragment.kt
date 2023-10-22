@@ -15,14 +15,8 @@ class TitleFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding: TitleFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.title_fragment, container, false)
 
-        binding.playGameButton.setOnClickListener {
-            findNavController().navigate(TitleFragmentDirections.actionTitleToGame())
-        }
         binding.button.setOnClickListener{
-           findNavController().navigate(TitleFragmentDirections.actionTitleToGame("player"))
-        }
-        binding.button2.setOnClickListener{
-            TitleFragmentDirections.actionTitleToGame("teams")
+           findNavController().navigate(TitleFragmentDirections.actionTitleToGame())
         }
         return binding.root
     }

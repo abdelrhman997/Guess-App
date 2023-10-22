@@ -26,9 +26,6 @@ class GameFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.game_fragment, container, false)
         viewModel= ViewModelProvider(this)[GameViewModel::class.java]
 
-        val gameFragmentArgs by navArgs<GameFragmentArgs>()
-        viewModel.playType = gameFragmentArgs.playType
-
         binding.correctButton.setOnClickListener {
             viewModel.onCorrect()
         }
@@ -37,6 +34,12 @@ class GameFragment : Fragment() {
         }
         viewModel.score.observe(viewLifecycleOwner) { newScore ->
             binding.scoreText.text = newScore.toString()
+        }
+        viewModel.eventGameFinish.observe(viewLifecycleOwner){ hasFinished ->
+            if(hasFinished){
+                gameFinished()
+                viewModel.doneNavigation()
+            }
         }
         viewModel.player.observe(viewLifecycleOwner) { newPlayer ->
             binding.playerText.text = viewModel.player.value!!.name

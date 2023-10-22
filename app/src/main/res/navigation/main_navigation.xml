@@ -33,10 +33,6 @@
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left"
             app:popUpTo="@+id/title_destination" />
-        <argument
-            android:name="playType"
-            app:argType="string"
-            android:defaultValue="player" />
     </fragment>
     <fragment
         android:id="@+id/score_destination"

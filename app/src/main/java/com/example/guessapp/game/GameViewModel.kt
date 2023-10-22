@@ -1,32 +1,40 @@
 package com.example.guessapp.game
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.guessapp.R
 import com.example.guessapp.model.Player
 
 class GameViewModel :ViewModel() {
-    var player = MutableLiveData<Player>()
+    val _player = MutableLiveData<Player>()
+    val player:LiveData<Player>
+        get() = _player
 
-    var score = MutableLiveData<Int>()
+    private val _score = MutableLiveData<Int>()
+    val score:LiveData<Int>
+        get() = _score
 
-    var playType = "player"
+    private val _eventGameFinish = MutableLiveData<Boolean>()
+    val eventGameFinish:LiveData<Boolean>
+        get() = _eventGameFinish
+
+
 
     private lateinit var playerList: MutableList<Player>
 
     init {
         Log.i("GameViewModel", "GameViewModel created ")
-        resetList(playType)
-
-        score.value=0
-        player.value=Player("",0)
+        resetList()
+        _eventGameFinish.value=false
+        _score.value=0
+        _player.value=Player("",0)
         nextPlayer()
     }
 
-    private fun resetList(playType:String) {
-        when(playType){
-            "player" ->  playerList = mutableListOf(
+    private fun resetList() {
+              playerList = mutableListOf(
                 Player("Messi", R.drawable.messi),
                 Player("Ronaldo", R.drawable.ronaldo),
                 Player("Salah", R.drawable.salah),
@@ -36,31 +44,33 @@ class GameViewModel :ViewModel() {
                 Player("saka", R.drawable.saka),
                 Player("foden", R.drawable.phden)
             )
-
-        }
         playerList.shuffle()
     }
 
     private fun nextPlayer() {
         if (playerList.isEmpty()) {
           //  gameFinished()
+            _eventGameFinish.value=true
         } else {
-            player.value = playerList.removeAt(0)
+            _player.value = playerList.removeAt(0)
         }
 
     }
      fun onSkip() {
-        score.value=(score.value)?.minus(1)
+        _score.value=(score.value)?.minus(1)
         nextPlayer()
     }
 
      fun onCorrect() {
-        score.value = (score.value)?.plus(1)
+        _score.value = (score.value)?.plus(1)
         nextPlayer()
     }
 
     override fun onCleared() {
         super.onCleared()
         Log.i("GameViewModel", "GameViewModel onCleared: ")
+    }
+    fun doneNavigation(){
+        _eventGameFinish.value=false
     }
 }
