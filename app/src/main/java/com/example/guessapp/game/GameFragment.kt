@@ -1,5 +1,6 @@
 package com.example.guessapp.game
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,10 @@ class GameFragment : Fragment() {
                 viewModel.doneNavigation()
             }
         }
+        viewModel.currentTime.observe(viewLifecycleOwner, Observer { newTime ->
+            binding.timerText.text = DateUtils.formatElapsedTime(newTime)
+
+        })
         viewModel.player.observe(viewLifecycleOwner) { newPlayer ->
             binding.playerText.text = viewModel.player.value!!.name
             binding.imageView.setImageResource(viewModel.player.value!!.img)
