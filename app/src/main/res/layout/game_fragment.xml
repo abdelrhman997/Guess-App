@@ -47,7 +47,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView"
             app:layout_constraintVertical_chainStyle="packed"
-            tools:text="&quot;Messi&quot;" />
+            android:text="@{@string/quote_format(gameViewModel.player.name)}"
+            />
 
         <TextView
             android:id="@+id/timer_text"
@@ -78,7 +79,7 @@
             app:layout_constraintBottom_toTopOf="@+id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="Score: 2" />
+            tools:text="@{@string/score_format(gameViewModel.score)}" />
 
         <Button
             android:id="@+id/skip_button"
@@ -124,7 +125,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/word_is_text"
-            app:srcCompat="@drawable/messi" />
+            app:src="@{gameViewModel.player.img}"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

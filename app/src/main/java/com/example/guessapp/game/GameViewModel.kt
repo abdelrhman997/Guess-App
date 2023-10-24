@@ -77,7 +77,7 @@ class GameViewModel :ViewModel() {
                 Player("Jude Bellingham", R.drawable.bellingham),
                 Player("Vinicius Junior", R.drawable.vinicius),
                 Player("Jamal Musiala", R.drawable.jamal),
-                Player("Eduardo Camavinga", R.drawable.camavinga),
+                //Player("Eduardo Camavinga", R.drawable.camavinga),
                 Player("Gavi", R.drawable.gavi),
                 Player("Rodrygo", R.drawable.rodrygo),
                 Player("Luka Modrić", R.drawable.luka),
