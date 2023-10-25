@@ -1,10 +1,12 @@
 package com.example.guessapp.game
 
 import android.os.CountDownTimer
+import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import com.example.guessapp.R
 import com.example.guessapp.model.Player
 
@@ -32,6 +34,9 @@ class GameViewModel :ViewModel() {
     private val _eventGameFinish = MutableLiveData<Boolean>()
     val eventGameFinish:LiveData<Boolean>
         get() = _eventGameFinish
+    val currentTimeString =_currentTime.map { newTime ->
+        DateUtils.formatElapsedTime(newTime)
+    }
 
 
 
