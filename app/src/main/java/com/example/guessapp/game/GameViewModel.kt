@@ -10,15 +10,19 @@ import androidx.lifecycle.map
 import com.example.guessapp.R
 import com.example.guessapp.model.Player
 
+private val CORRECT_BUZZ_PATTERN = longArrayOf(100, 100, 100, 100, 100, 100)
+private val PANIC_BUZZ_PATTERN = longArrayOf(0, 200)
+private val GAME_OVER_BUZZ_PATTERN = longArrayOf(0, 2000)
+private val NO_BUZZ_PATTERN = longArrayOf(0)
 class GameViewModel :ViewModel() {
     companion object{
         private const val Done= 0L
         private const val ONE_SECOND =1000L
         private const val COUNTDOWN_TIME = 60000L
+        private const val COUNTDOWN_PANIC_SECONDS = 10L
+
     }
     private val timer:CountDownTimer
-
-
     val _player = MutableLiveData<Player>()
     val player:LiveData<Player>
         get() = _player
@@ -37,11 +41,18 @@ class GameViewModel :ViewModel() {
     val currentTimeString =_currentTime.map { newTime ->
         DateUtils.formatElapsedTime(newTime)
     }
-
-
-
     private lateinit var playerList: MutableList<Player>
 
+    enum class BuzzType(val pattern: LongArray) {
+        CORRECT(CORRECT_BUZZ_PATTERN),
+        GAME_OVER(GAME_OVER_BUZZ_PATTERN),
+        COUNTDOWN_PANIC(PANIC_BUZZ_PATTERN),
+        NO_BUZZ(NO_BUZZ_PATTERN)
+    }
+
+    private val _eventBuzz = MutableLiveData<BuzzType>()
+    val eventBuzz: LiveData<BuzzType>
+        get() = _eventBuzz
     init {
         Log.i("GameViewModel", "GameViewModel created ")
         resetList()
@@ -55,12 +66,16 @@ class GameViewModel :ViewModel() {
             @Override
             override fun onTick(millisUntilFinished: Long) {
                 _currentTime.value= (millisUntilFinished / ONE_SECOND)
+                if (millisUntilFinished / ONE_SECOND <= COUNTDOWN_PANIC_SECONDS) {
+                    _eventBuzz.value = BuzzType.COUNTDOWN_PANIC
+                }
             }
 
             @Override
             override fun onFinish() {
                 _currentTime.value = Done
                 _eventGameFinish.value = true
+                _eventBuzz.value = BuzzType.GAME_OVER
             }
         }
         timer.start()
@@ -74,18 +89,19 @@ class GameViewModel :ViewModel() {
                 Player("Mohamed Salah", R.drawable.salah),
                 Player("Son", R.drawable.son),
                 Player("Harry Kane", R.drawable.kane),
-//                Player("Mane", R.drawable.mane),
                 Player("Bukayo Saka", R.drawable.saka),
                 Player("Erling Haaland", R.drawable.haaland),
-              //  Player("Frenkie De Young", R.drawable.saka),
                 Player("Kylian Mbappé", R.drawable.kylian),
                 Player("Jude Bellingham", R.drawable.bellingham),
                 Player("Vinicius Junior", R.drawable.vinicius),
                 Player("Jamal Musiala", R.drawable.jamal),
-                //Player("Eduardo Camavinga", R.drawable.camavinga),
                 Player("Gavi", R.drawable.gavi),
                 Player("Rodrygo", R.drawable.rodrygo),
                 Player("Luka Modrić", R.drawable.luka),
+                  Player("Phil Foden", R.drawable.phden)
+                  //Player("Eduardo Camavinga", R.drawable.camavinga),
+//                Player("Mane", R.drawable.mane),
+                  //  Player("Frenkie De Young", R.drawable.saka),
 //                Player("Neymar", R.drawable.saka),
 //                Player("Pedri", R.drawable.saka),
 //                Player("Marcus Rashford", R.drawable.saka),
@@ -98,7 +114,6 @@ class GameViewModel :ViewModel() {
 //                Player("Kai Havertz", R.drawable.saka),
 //                Player("André Onana", R.drawable.saka),
 //                Player("Thiago Silva", R.drawable.saka),
-                Player("Phil Foden", R.drawable.phden)
             )
         playerList.shuffle()
     }
@@ -121,7 +136,9 @@ class GameViewModel :ViewModel() {
 
      fun onCorrect() {
         _score.value = (score.value)?.plus(1)
-        nextPlayer()
+         _eventBuzz.value = BuzzType.CORRECT
+
+         nextPlayer()
     }
 
     override fun onCleared() {
@@ -132,5 +149,7 @@ class GameViewModel :ViewModel() {
     fun doneNavigation(){
         _eventGameFinish.value=false
     }
-
+    fun onBuzzComplete() {
+        _eventBuzz.value = BuzzType.NO_BUZZ
+    }
 }
